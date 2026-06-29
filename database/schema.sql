@@ -1,0 +1,13 @@
+CREATE DATABASE shoppingdb;
+
+USE shoppingdb;
+
+CREATE TABLE product(
+
+id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+name VARCHAR(200),
+
+price DOUBLE
+
+);
