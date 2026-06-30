@@ -16,18 +16,10 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Backend') {
             steps {
                 dir('backend') {
                     sh 'mvn clean package'
-                }
-            }
-        }
-
-        stage('Docker Build') {
-            steps {
-                dir('backend') {
-                    sh 'docker build -t hariprasad2404/shopping-app:v1 .'
                 }
             }
         }
@@ -44,9 +36,31 @@ pipeline {
             }
         }
 
-        stage('Push Image to Docker Hub') {
+        stage('Build Backend Image') {
             steps {
-                sh 'docker push hariprasad2404/shopping-app:v1'
+                dir('backend') {
+                    sh 'docker build -t hariprasad2404/shopping-backend:v1 .'
+                }
+            }
+        }
+
+        stage('Build Frontend Image') {
+            steps {
+                dir('frontend') {
+                    sh 'docker build -t hariprasad2404/shopping-frontend:v1 .'
+                }
+            }
+        }
+
+        stage('Push Backend Image') {
+            steps {
+                sh 'docker push hariprasad2404/shopping-backend:v1'
+            }
+        }
+
+        stage('Push Frontend Image') {
+            steps {
+                sh 'docker push hariprasad2404/shopping-frontend:v1'
             }
         }
 
