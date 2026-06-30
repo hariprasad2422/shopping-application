@@ -27,7 +27,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 dir('backend') {
-                    sh 'docker build -t YOUR_DOCKERHUB_USERNAME/shopping-app:v1 .'
+                    sh 'docker build -t hariprasad2404/shopping-app:v1 .'
                 }
             }
         }
