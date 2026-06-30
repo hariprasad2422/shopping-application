@@ -1,4 +1,5 @@
 pipeline {
+
     agent any
 
     tools {
@@ -20,6 +21,32 @@ pipeline {
                 dir('backend') {
                     sh 'mvn clean package'
                 }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir('backend') {
+                    sh 'docker build -t YOUR_DOCKERHUB_USERNAME/shopping-app:v1 .'
+                }
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                }
+            }
+        }
+
+        stage('Push Image to Docker Hub') {
+            steps {
+                sh 'docker push hariprasad2404/shopping-app:v1'
             }
         }
 
