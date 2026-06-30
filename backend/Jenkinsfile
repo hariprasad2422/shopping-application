@@ -1,5 +1,4 @@
 pipeline {
-
     agent any
 
     tools {
@@ -18,7 +17,9 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                dir('backend') {
+                    sh 'mvn clean package'
+                }
             }
         }
 
