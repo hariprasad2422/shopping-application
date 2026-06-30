@@ -1,64 +1,40 @@
 pipeline {
+    agent any
 
-agent any
+    tools {
+        maven 'Maven'
+        jdk 'JDK21'
+    }
 
-tools {
+    stages {
 
-maven 'Maven'
+        stage('Git Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/yourusername/shopping-app.git'
+            }
+        }
 
-jdk 'JDK21'
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
 
-}
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t shopping-app:v1 .'
+            }
+        }
 
-stages {
+        stage('Run Container') {
+            steps {
+                sh '''
+                    docker rm -f shopping-app || true
+                    docker run -d --name shopping-app -p 8080:8080 shopping-app:v1
+                '''
+            }
+        }
 
-stage('Git Checkout'){
-
-steps{
-
-git branch:'main',
-url:'https://github.com/yourusername/shopping-app.git'
-
-}
-
-}
-
-stage('Build'){
-
-steps{
-
-sh 'mvn clean package'
-
-}
-
-}
-
-stage('Docker Build'){
-
-steps{
-
-sh 'docker build -t shopping-app:v1 .'
-
-}
-
-}
-
-stage('Run Container'){
-
-steps{
-
-sh '''
-
-docker rm -f shopping-app || true
-
-docker run -d --name shopping-app -p 8080:8080 shopping-app:v1
-
-'''
-
-}
-
-}
-
-}
-
+    }
 }
